@@ -78,6 +78,10 @@ track_data = DataFrame(
     }
 )
 
+# DGP for the simulation assumes independent potential outcomes, unequal 
+# variances, and a baseline conversion rate that is in the basement so it 
+# should be roughly reflective of a real world A/B test with streaming data.
+
 for t in range(1, T):
     
     # Simulate the number of new players
@@ -140,7 +144,13 @@ for t in range(1, T):
     
     # Append the data to the main data frame
     data = data.vstack(data_t, in_place=True)
-
+    
+    # After we have collected data for 10 periods under each policy, we can 
+    # start to make predictions about the optimal policy at the next period.
+    # Here we use the data up to time t to forcast the performance of each 
+    # policy of the next seven periods. We then use the posterior probabilities 
+    # of each policy being optimal to allocate the next period's new players.
+    # We then repeat this process until the end of the experiment.
     
     if t > 10: 
         
